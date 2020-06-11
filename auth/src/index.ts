@@ -1,7 +1,7 @@
 import express from 'express';
 import { json } from 'body-parser';
 import 'express-async-errors';
-require('dotenv').config();
+import mongoose from 'mongoose';
 
 import { currentUserRouter } from './routes/current-user';
 import { signinRouter } from './routes/signin';
@@ -24,4 +24,19 @@ app.all('*', async (req, res) => {
 
 app.use(errorHandler);
 
+const start = async () => {
+  try {
+    await mongoose.connect('mongodb://auth-mongo-srv:27017/auth', {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true
+    });
+    console.log('Connected to mongoDB');
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 app.listen(3000, () => console.log('Server running at port 3000!'));
+
+start();
