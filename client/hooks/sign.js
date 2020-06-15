@@ -13,9 +13,9 @@ export default ({ url, text }) => {
     onSuccess: () => Router.push('/')
   });
 
-  const onSubmit = e => {
+  const onSubmit = async e => {
     e.preventDefault();
-    doRequest();
+    await doRequest();
   };
 
   return (
