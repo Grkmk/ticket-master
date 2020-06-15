@@ -2,3 +2,5 @@
 auth/node_modules
 .env
 auth/.env
+client/node_modules
+client/.next
