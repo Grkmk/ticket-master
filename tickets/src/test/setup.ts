@@ -6,6 +6,7 @@ declare global {
   namespace NodeJS {
     interface Global {
       signin(): string[];
+      createId(): string;
     }
   }
 }
@@ -35,10 +36,15 @@ afterAll(async () => {
 });
 
 global.signin = () => {
-  const payload = { id: '1lk24j124l', email: 'test@test.com' };
+  const payload = {
+    id: mongoose.Types.ObjectId().toHexString(),
+    email: 'test@test.com'
+  };
   const token = jwt.sign(payload, process.env.JWT_KEY!);
   const session = { jwt: token };
   const sessionJSON = JSON.stringify(session);
   const base64 = Buffer.from(sessionJSON).toString('base64');
   return [`express:sess=${base64}`];
 };
+
+global.createId = () => new mongoose.Types.ObjectId().toHexString();
