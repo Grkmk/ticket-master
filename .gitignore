@@ -5,3 +5,4 @@ auth/.env
 client/node_modules
 client/.next
 tickets/node_modules
+nss-sample/node_modules
