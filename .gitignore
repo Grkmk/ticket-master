@@ -6,3 +6,4 @@ client/node_modules
 client/.next
 tickets/node_modules
 nats/node_modules
+orders/node_modules
