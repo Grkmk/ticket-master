@@ -32,4 +32,14 @@ it('reserves ticket', async () => {
     .expect(201);
 });
 
-it('emits order:createdEvent', async () => {});
+it('emits order:createdEvent', async () => {
+  const ticket = await global.createTicket();
+
+  await request(app)
+    .post('/api/orders')
+    .set('Cookie', global.signin())
+    .send({ ticketId: ticket.id })
+    .expect(201);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
+});
