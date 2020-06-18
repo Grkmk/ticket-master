@@ -6,9 +6,17 @@ import { natsWrapper } from './nats-wrapper';
 const start = async () => {
   if (!process.env.JWT_KEY) throw new Error('JWT_KEY not found');
   if (!process.env.MONGO_URI) throw new Error('MONGO_URI not found');
+  if (!process.env.NATS_CLUSTER_ID)
+    throw new Error('NATS_CLUSTER_ID not found');
+  if (!process.env.NATS_CLIENT_ID) throw new Error('NATS_CLIENT_ID not found');
+  if (!process.env.NATS_URL) throw new Error('NATS_URL not found');
 
   try {
-    await natsWrapper.connect('ticketing', 'asdgasg', 'http://nats-srv:4222');
+    await natsWrapper.connect(
+      process.env.NATS_CLUSTER_ID,
+      process.env.NATS_CLIENT_ID,
+      process.env.NATS_URL
+    );
     natsWrapper.client.on('close', () => {
       console.log('nats connection closed');
       process.exit();
