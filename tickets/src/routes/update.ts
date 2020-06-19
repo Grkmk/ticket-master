@@ -4,7 +4,8 @@ import {
   requireAuth,
   validateRequest,
   NotFoundError,
-  UnauthorizedError
+  UnauthorizedError,
+  BadRequestError
 } from '@tickitzz/common';
 
 import { natsWrapper } from '../nats-wrapper';
@@ -21,6 +22,7 @@ router.put(
   async (req: Request, res: Response) => {
     const ticket = await Ticket.findById(req.params.id);
     if (!ticket) throw new NotFoundError();
+    if (ticket.orderId) throw new BadRequestError('Ticket not available');
     if (ticket.userId !== req.currentUser!.id) throw new UnauthorizedError();
 
     ticket.set({ title: req.body.title, price: req.body.price });
