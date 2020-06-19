@@ -57,7 +57,11 @@ global.signin = () => {
 
 global.createTicket = () => {
   return new Promise<TicketDoc>(async (resolve, reject) => {
-    const ticket = Ticket.build({ title: 'concert', price: 1 });
+    const ticket = Ticket.build({
+      id: mongoose.Types.ObjectId().toHexString(),
+      title: 'concert',
+      price: 1
+    });
     try {
       await ticket.save();
     } catch (err) {

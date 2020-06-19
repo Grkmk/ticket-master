@@ -1,14 +1,16 @@
+import mongoose from 'mongoose';
 import express, { Request, Response } from 'express';
 import {
   requireAuth,
   validateRequest,
   NotFoundError,
-  BadRequestError
+  BadRequestError,
+  OrderStatus
 } from '@tickitzz/common';
 import { body } from 'express-validator';
 
 import { Ticket } from '../models/ticket';
-import { Order, OrderStatus } from '../models/order';
+import { Order } from '../models/order';
 import { OrderCreatedPublisher } from '../events/publishers/order-created-publisher';
 import { natsWrapper } from '../nats-wrapper';
 
@@ -44,8 +46,12 @@ router.post(
       id: order.id,
       status: order.status,
       userId: order.userId,
+      version: order.version,
       expiresAt: order.expiresAt.toISOString(),
-      ticket: { id: ticket.id, price: ticket.price }
+      ticket: {
+        id: ticket.id,
+        price: ticket.price
+      }
     });
 
     res.status(201).send(order);

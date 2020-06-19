@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { OrderStatus } from '@tickitzz/common';
+import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
 
 import { TicketDoc } from './ticket';
 
@@ -16,6 +17,7 @@ export interface OrderDoc extends mongoose.Document {
   userId: string;
   status: OrderStatus;
   expiresAt: Date;
+  version: number;
   ticket: TicketDoc;
 }
 
@@ -26,7 +28,7 @@ interface OrderModel extends mongoose.Model<OrderDoc> {
 const orderSchema = new mongoose.Schema(
   {
     userId: { type: String, required: true },
-    status: { type: String, enum: Object.values(OrderStatus), required: true },
+    status: { type: String, required: true, enum: Object.values(OrderStatus) },
     expiresAt: { type: mongoose.Schema.Types.Date },
     ticket: { type: mongoose.Schema.Types.ObjectId, ref: 'Ticket' }
   },
@@ -39,7 +41,8 @@ const orderSchema = new mongoose.Schema(
     }
   }
 );
-
+orderSchema.set('versionKey', 'version');
+orderSchema.plugin(updateIfCurrentPlugin);
 orderSchema.statics.build = (attrs: OrderAttrs) => new Order(attrs);
 
 const Order = mongoose.model<OrderDoc, OrderModel>('Order', orderSchema);
