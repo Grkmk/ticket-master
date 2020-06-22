@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
