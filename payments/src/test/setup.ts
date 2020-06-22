@@ -2,14 +2,11 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 
-import { TicketDoc, Ticket } from '../models/ticket';
-
 declare global {
   namespace NodeJS {
     interface Global {
       signin(): string[];
       createId(): string;
-      createTicket(): Promise<TicketDoc>;
     }
   }
 }
@@ -51,22 +48,6 @@ global.signin = () => {
   const sessionJSON = JSON.stringify(session);
   const base64 = Buffer.from(sessionJSON).toString('base64');
   return [`express:sess=${base64}`];
-};
-
-global.createTicket = () => {
-  return new Promise<TicketDoc>(async (resolve, reject) => {
-    const ticket = Ticket.build({
-      userId: mongoose.Types.ObjectId().toHexString(),
-      title: 'concert',
-      price: 1
-    });
-    try {
-      await ticket.save();
-    } catch (err) {
-      reject(err);
-    }
-    resolve(ticket);
-  });
 };
 
 global.createId = () => new mongoose.Types.ObjectId().toHexString();
